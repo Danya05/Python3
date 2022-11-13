@@ -1,0 +1,38 @@
+from contextlib import contextmanager
+
+
+class supresser(object):
+    def __init__(self, file_name, *errors):
+        self.file_obj = open(file_name)
+        self.errors = list(errors)
+
+    def __enter__(self):
+        return self.file_obj
+
+    def __exit__(self, type, value, traceback):
+        self.file_obj.close()
+
+@contextmanager
+def supresser(*args):
+    try:
+        yield
+    except args:
+        pass
+
+@contextmanager
+def retyper(type_from, type_to):
+    try:
+        yield
+    except type_from as err:
+        raise type_to (*getattr(err, "args"))
+    except type_to as err:
+        raise type_from (*getattr(err, "args"))
+
+@contextmanager
+def dumper(stream):
+    try:
+        yield
+    except Exception as err:
+        stream.write(repr(err)[:repr(err).find('(')])
+        stream.write(': ' + str(*getattr(err, "args")) + '\n')
+        raise err
