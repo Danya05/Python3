@@ -1,0 +1,15 @@
+def force_load(module_name):
+    with open(module_name+".py", 'r') as f:
+        arr = f.readlines()
+        ldict = {}
+        substr = ""
+        for i in arr:
+            if len(i) > 1:
+                substr += i
+            try:
+                exec(substr, globals(), ldict)
+
+            except:
+                if substr[-2] != ":":
+                    substr = substr[:len(substr) - len(i)]
+    return ldict
